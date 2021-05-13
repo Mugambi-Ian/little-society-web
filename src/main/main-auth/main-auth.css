@@ -1,0 +1,58 @@
+.login-body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.login-body img.logo {
+  width: 250px;
+  object-fit: contain;
+  align-self: center;
+  margin-top: 50px;
+}
+h1 {
+  margin: 0;
+  margin-top: 20px;
+  align-self: center;
+  width: max-content;
+  color: #275efe;
+  font-weight: 500;
+  font-size: 1.6 rem;
+}
+h2 {
+  margin: 0;
+  margin-top: 5px;
+  align-self: center;
+  width: max-content;
+  color: #5c86ff;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.login-body .button {
+  box-shadow: #00000059 0px 25px 50px -12px;
+  width: 300px;
+  display: flex;
+  margin: 30px;
+  align-self: center;
+  justify-content: center;
+  padding: 10px;
+  border: 0.5px solid #00000039;
+  border-radius: 10px;
+}
+
+.button img {
+  width: 35px;
+  height: 35px;
+  margin-right: 20px;
+  align-self: center;
+}
+.button p {
+  align-self: center;
+  margin: 0;
+}
+
+.button:active {
+  animation: shadow-drop-2-center 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}

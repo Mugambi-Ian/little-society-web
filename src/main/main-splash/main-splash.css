@@ -1,0 +1,23 @@
+.splash-body {
+  position: fixed;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  background-color: #72d1fb;
+  animation: fade-in 0.3s ease-in;
+  z-index: 10px;
+}
+
+.splash-body img {
+  width: 70%;
+  max-width: 350px;
+  object-fit: contain;
+  align-self: center;
+  padding: 10px;
+  border-radius: 5px;
+  animation: slide-top 0.9s ease-out;
+}
+.splash-body.close {
+  animation: slide-out-left 1.5s both;
+}

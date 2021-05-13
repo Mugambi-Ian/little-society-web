@@ -1,0 +1,9 @@
+.profile-body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.profile-body h1 {
+  margin-top: 50px;
+}
