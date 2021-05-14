@@ -26,7 +26,15 @@ export default class MainApp extends React.Component {
         {this.state.loading === true ? (
           <Loader />
         ) : this.state.createUser ? (
-          <UserProfile newUser={true} />
+          <UserProfile
+            newUser={this.state.createUser}
+            closeToast={this.props.scloseToast}
+            showTimedToast={this.props.showTimedToast}
+            showUnTimedToast={this.props.showUnTimedToast}
+            createdUser={() => {
+              this.setState({ createUser: undefined });
+            }}
+          />
         ) : (
           ""
         )}

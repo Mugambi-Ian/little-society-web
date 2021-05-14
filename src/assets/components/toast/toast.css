@@ -1,5 +1,5 @@
 .toast {
-  top: 0;
+  bottom: 0;
   margin: auto;
   width: 100vw;
   position: fixed;
@@ -38,7 +38,7 @@
 
 @keyframes slide-up-anim {
   0% {
-    transform: translateY(-100px);
+    transform: translateY(100px);
   }
   100% {
     transform: translateY(0);
@@ -60,7 +60,7 @@
     opacity: 0.01;
   }
   100% {
-    transform: translateY(-100px);
+    transform: translateY(100px);
     opacity: 0;
   }
 }

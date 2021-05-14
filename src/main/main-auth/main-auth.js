@@ -31,7 +31,7 @@ export default class Login extends Component {
         <div className="login-body">
           <TypeWritter />
           <h1>Sign In To Proceed</h1>
-          <h2>We make this easy for you</h2>
+          <h2>We made this easy for you</h2>
           <div
             className="button"
             onClick={async () => {
