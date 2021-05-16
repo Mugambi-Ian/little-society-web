@@ -4,12 +4,21 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-top: 50px;
+  animation: fade-in 0.4s both;
+}
+.login-body .animation {
+  position: fixed;
+}
+.login-body .animation.right {
+  position: fixed;
+  right: 0;
 }
 .login-body img.logo {
   width: 250px;
   object-fit: contain;
   align-self: center;
-  margin-top: 50px;
+  margin-top: -30px;
 }
 h1 {
   margin: 0;
@@ -35,18 +44,23 @@ h2 {
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   width: 300px;
   display: flex;
-  margin: 30px;
+  margin: 10px;
   align-self: center;
   justify-content: center;
   padding: 10px;
   border: 0.5px solid #00000039;
   border-radius: 10px;
+  background-color: #fff;
 }
 
 .button img {
   width: 35px;
   height: 35px;
   margin-right: 20px;
+  align-self: center;
+} .button .lottie{
+  width: 65px;
+  height: 65px;
   align-self: center;
 }
 .button p {

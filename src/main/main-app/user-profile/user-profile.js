@@ -10,19 +10,55 @@ import InputLabel from "@material-ui/core/InputLabel";
 import { Calendar } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css";
-import { validField, _database, _storage } from "../../../config";
+import Lottie from "react-lottie";
+import pictureAnim from "../../../assets/animations/picture.json";
+import saveAnim from "../../../assets/animations/save.json";
+import signOutAnim from "../../../assets/animations/log-out.json";
+import signUpAnim from "../../../assets/animations/signup.json";
+import launchAnim from "../../../assets/animations/launch.json";
+import {
+  dateToday,
+  validField,
+  _auth,
+  _database,
+  _storage,
+} from "../../../config";
+import Loader from "../../../assets/components/loader/loader";
+import ReCAPTCHA from "react-google-recaptcha";
+import { RECAP_KEY } from "../../../config/config";
 
 var src = "";
 export default class UserProfile extends React.Component {
   state = {
+    loading: true,
+    recap: undefined,
     user: {
       userDp: "",
       userName: "",
       userAge: "",
-      userId: "",
-      userGender: "",
+      userId: _auth.currentUser.uid,
+      userGender: "__",
+      phoneNumber: "",
+      email: "",
+      fullName: "",
     },
   };
+  async componentWillMount() {
+    var { user } = this.state;
+    if (this.props.newUser === true) {
+      user.createdOn = dateToday();
+      user.userName = _auth.currentUser.email.split("@")[0];
+      user.fullName = _auth.currentUser.displayName;
+    } else {
+      user = this.props.user;
+    }
+    this.setState({ user, loading: false });
+  }
+  //-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz
+  isValidUSerName() {
+    var regex = /^[0-9A-Za-z_-]+[0-9A-Za-z_-]*$/g;
+    return regex.test(this.state.user.userName);
+  }
   async uploadDp() {
     this.setState({ loading: true });
     const id = this.state.user.userId + new Date().getTime();
@@ -41,9 +77,9 @@ export default class UserProfile extends React.Component {
                 await setTimeout(() => {
                   var url = "" + downloadURL;
                   const { user } = this.state;
-                  user.productDp = url;
+                  user.userDp = url;
                   this.setState({ user, uploadPic: undefined });
-                  this.saveProduct();
+                  this.syncUser();
                 }, 1000);
               }.bind(this)
             )
@@ -55,140 +91,299 @@ export default class UserProfile extends React.Component {
       .bind(this);
   }
   async updateUser() {
-    const { createdOn, userAge, userId, userDp, userGender, userName } =
+    var { userAge, userGender, userName, phoneNumber, email, fullName } =
       this.state.user;
-    if (validField(userAge) && validField(userName) && validField(userGender)) {
-      await _database.ref("users/data/" + userId).once("value", async (x) => {
-        await x.ref.child("userDp").set(userDp);
-        await x.ref.child("userId").set(userId);
-        await x.ref.child("userAge").set(userAge);
-        await x.ref.child("userGender").set(userGender);
-        await x.ref.child("userName").set(userName);
-        await x.ref.child("createdOn").set(createdOn);
+    if (this.state.dateSelected) {
+      const x = this.state.dateSelected;
+      userAge = x.getFullYear() + "-" + x.getMonth() + "-" + x.getDate();
+    }
+    if (this.isValidUSerName() === false) {
+      this.props.showTimedToast("Use alphanumeric characters for a username.");
+    } else if (
+      validField(userAge) &&
+      userGender !== "__" &&
+      validField(phoneNumber) &&
+      validField(fullName) &&
+      validField(email)
+    ) {
+      await _database.ref("users/social/" + userName).once("value", (x) => {
+        console.log(x.val());
+        if (x.val() == null || x.val() === _auth.currentUser.uid) {
+          if (this.state.uploadPic) {
+            this.uploadDp();
+          } else {
+            this.syncUser();
+          }
+        } else {
+          this.props.showTimedToast("This username is unavailble");
+        }
       });
-      this.props.showTimedToast("Save Successfull");
     } else {
       this.props.showTimedToast("All fields are required");
     }
   }
+  async syncUser() {
+    var {
+      createdOn,
+      userAge,
+      userId,
+      userDp,
+      userGender,
+      userName,
+      phoneNumber,
+      email,
+      fullName,
+    } = this.state.user;
+    if (this.state.dateSelected) {
+      const x = this.state.dateSelected;
+      userAge = x.getFullYear() + "-" + x.getMonth() + "-" + x.getDate();
+    }
+    this.setState({ loading: true });
+    const x = _database.ref("users/data/" + userId);
+    await x.child("userDp").set(userDp);
+    await x.child("userId").set(userId);
+    await x.child("userAge").set(userAge);
+    await x.child("userGender").set(userGender);
+    await x.child("userName").set(userName);
+    await x.child("fullName").set(fullName);
+    await x.child("phoneNumber").set(phoneNumber);
+    await x.child("email").set(email);
+    await x.child("createdOn").set(createdOn);
+    await _database.ref("users/social/" + userName).set(_auth.currentUser.uid);
+    this.setState({ loading: false });
+    this.props.showTimedToast("Save Successfull");
+    this.props.closeEditing();
+  }
 
   render() {
     return (
-      <div className="profile-body">
-        <h1>My Profile</h1>
-        <h2>Fill out your details</h2>
-        <span className="line" />
-        <div className="info-div">
-          <div className="pic">
-            <ImageUploader
-              src={() => {
-                return this.state.user.userDp === ""
-                  ? undefined
-                  : this.state.user.userDp;
-              }}
-              hideField={() => {
-                this.setState({ hideField: true });
-              }}
-              showField={() => {
-                this.setState({ hideField: undefined });
-              }}
-              updateValue={(x) => {
-                fetch(x)
-                  .then((res) => res.blob())
-                  .then((blob) => {
-                    const { user } = this.state;
-                    user.userDp = blob;
-                    this.setState({ user, uploadPic: true });
-                  });
-              }}
-            />
-          </div>
-          <div className="details">
-            <Input
-              value={this.state.user.userName}
-              onChange={(e) => {
-                const { user } = this.state;
-                user.userName = e.target.value;
-                this.setState({ user });
-              }}
-              placeholder="User Name"
-            />
-            <Input
-              value={this.state.user.phoneNumer}
-              onChange={(e) => {
-                const { user } = this.state;
-                user.phoneNumber = e.target.value;
-                this.setState({ user });
-              }}
-              placeholder="Phone Number"
-            />
-            <Input
-              value={this.state.user.email}
-              onChange={(e) => {
-                const { user } = this.state;
-                user.email = e.target.value;
-                this.setState({ user });
-              }}
-              placeholder="Email Address"
-            />
-            <FormControl style={{ marginTop: "20px" }}>
-              <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={this.state.user.userGender}
-                onChange={(e)}
-              >
-                <MenuItem value={1}>Male</MenuItem>
-                <MenuItem value={2}>Female</MenuItem>
-                <MenuItem value={3}>Non-Binary</MenuItem>
-                <MenuItem value={4}>Rather Not Say</MenuItem>
-                <MenuItem value={undefined}>----</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          <div
-            style={{
-              alignSelf: "center",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <p className="f-t unselectable">Date Of Birth</p>
-            <Calendar
-              date={new Date()}
-              onChange={(date) => {
-                console.log(date);
-              }}
-            />
-          </div>
-        </div>
-        {this.props.newUser === true ? (
+      <div style={{ backgroundColor: "#fff", animation: "fade-in .3s both" }}>
+        {this.state.loading === true ? (
           ""
         ) : (
-          <div className="button left">
-            <img
-              src={require("../../../assets/drawables/ic-close.png").default}
-              alt=" "
-              className="unselectable"
-            />
-            <p className="unselectable">Close</p>
-          </div>
+          <>
+            <div className="launch-anim left">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: launchAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+            </div>
+            <div className="launch-anim right">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: signUpAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+            </div>
+          </>
         )}
-        <div
-          className="button right"
-          onClick={async () => {
-            await setTimeout(() => {
-              this.updateUser();
-            }, 200);
-          }}
-        >
-          <img
-            src={require("../../../assets/drawables/ic-save.png").default}
-            alt=" "
-            className="unselectable"
-          />
-          <p className="unselectable">Save</p>
+        <div className="profile-body">
+          {this.state.loading === true ? (
+            <Loader />
+          ) : (
+            <>
+              <div>
+                <ReCAPTCHA
+                  size="invisible"
+                  sitekey={RECAP_KEY}
+                  onChange={(e) => {
+                    this.setState({ recap: e });
+                  }}
+                  onExpired={() => {
+                    this.setState({ recap: undefined });
+                  }}
+                />
+              </div>
+              <h1>My Profile</h1>
+              <h2>Fill out your details</h2>
+              <span className="line" />
+              <div className="info-div">
+                <div className="pic">
+                  <ImageUploader
+                    src={() => {
+                      return this.state.user.userDp === ""
+                        ? undefined
+                        : this.state.user.userDp;
+                    }}
+                    hideField={() => {
+                      this.setState({ hideField: true });
+                    }}
+                    showField={() => {
+                      this.setState({ hideField: undefined });
+                    }}
+                    updateValue={(x) => {
+                      fetch(x)
+                        .then((res) => res.blob())
+                        .then((blob) => {
+                          const { user } = this.state;
+                          user.userDp = blob;
+                          this.setState({ user, uploadPic: true });
+                        });
+                    }}
+                  />
+                </div>
+                <div className="details">
+                  <Input
+                    value={this.state.user.userName}
+                    onChange={(e) => {
+                      const { user } = this.state;
+                      user.userName = e.target.value;
+                      this.setState({ user });
+                    }}
+                    placeholder="User Name"
+                  />
+                  <Input
+                    value={this.state.user.fullName}
+                    onChange={(e) => {
+                      const { user } = this.state;
+                      user.fullName = e.target.value;
+                      this.setState({ user });
+                    }}
+                    placeholder="Full Name"
+                  />
+                  <Input
+                    value={this.state.user.phoneNumer}
+                    onChange={(e) => {
+                      const { user } = this.state;
+                      user.phoneNumber = e.target.value;
+                      this.setState({ user });
+                    }}
+                    placeholder="Phone Number"
+                  />
+                  <Input
+                    value={this.state.user.email}
+                    onChange={(e) => {
+                      const { user } = this.state;
+                      user.email = e.target.value;
+                      this.setState({ user });
+                    }}
+                    placeholder="Email Address"
+                  />
+                  <FormControl style={{ marginTop: "20px" }}>
+                    <InputLabel id="demo-simple-select-label">
+                      Gender
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={this.state.user.userGender}
+                      onChange={(e) => {
+                        const { user } = this.state;
+                        user.userGender = e.target.value;
+                        this.setState({ user });
+                      }}
+                    >
+                      <MenuItem value={1}>Male</MenuItem>
+                      <MenuItem value={2}>Female</MenuItem>
+                      <MenuItem value={3}>Non-Binary</MenuItem>
+                      <MenuItem value={4}>Rather Not Say</MenuItem>
+                      <MenuItem value="__">----</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <div
+                  style={{
+                    alignSelf: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <p className="f-t unselectable">Date Of Birth</p>
+                  <Calendar
+                    date={this.state.dateSelected}
+                    onChange={(date) => {
+                      this.setState({ dateSelected: date });
+                    }}
+                    maxDate={new Date()}
+                  />
+                </div>
+              </div>
+              {this.props.newUser === true ? (
+                <div
+                  className="button left"
+                  onClick={async () => {
+                    await setTimeout(() => {
+                      _auth.signOut().then(() => {
+                        this.props.revokeAccess();
+                      });
+                    }, 200);
+                  }}
+                >
+                  <div
+                    className="lottie"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      marginRight: "10px",
+                    }}
+                  >
+                    <Lottie
+                      options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: signOutAnim,
+                        rendererSettings: {
+                          preserveAspectRatio: "xMidYMid slice",
+                        },
+                      }}
+                    />
+                  </div>
+                  <p className="unselectable">Sign Out</p>
+                </div>
+              ) : (
+                <div
+                  className="button left"
+                  onClick={async () => {
+                    await setTimeout(() => {
+                      this.props.closeEditing();
+                    }, 200);
+                  }}
+                >
+                  <img
+                    src={
+                      require("../../../assets/drawables/ic-close.png").default
+                    }
+                    alt=" "
+                    className="unselectable"
+                  />
+                  <p className="unselectable">Close</p>
+                </div>
+              )}
+            </>
+          )}
+          <div
+            className="button right"
+            onClick={async () => {
+              await setTimeout(() => {
+                this.updateUser();
+              }, 200);
+            }}
+          >
+            <div className="lottie">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: saveAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+            </div>
+            <p className="unselectable">Save</p>
+          </div>
         </div>
       </div>
     );
@@ -256,14 +451,24 @@ export const ImageUploader = (props) => {
         }}
       />
       {updated === false && src === undefined ? (
-        <div className="upload-img">
+        <div
+          className="upload-img"
+          onClick={() => imageUploader.current.click()}
+        >
           <p className="unselectable">Click to upload Image</p>
-          <img
-            ref={uploadedImage}
-            onClick={() => imageUploader.current.click()}
-            alt="product-Logo"
-            src={require("../../../assets/drawables/ic-camera.png").default}
-          />
+          <lottie>
+            <Lottie
+              ref={uploadedImage}
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: pictureAnim,
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+            />
+          </lottie>
         </div>
       ) : cropped === false && src === undefined ? (
         <div className="crop-image-body">
@@ -354,14 +559,24 @@ export const ImageUploader = (props) => {
           }}
         />
       ) : (
-        <div className="upload-img">
+        <div
+          className="upload-img"
+          onClick={() => imageUploader.current.click()}
+        >
           <p className="unselectable">Click to upload Image</p>
-          <img
-            ref={uploadedImage}
-            onClick={() => imageUploader.current.click()}
-            alt="product-Logo"
-            src={require("../../../assets/drawables/ic-camera.png").default}
-          />
+          <lottie>
+            <Lottie
+              ref={uploadedImage}
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: pictureAnim,
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+            />
+          </lottie>
         </div>
       )}
     </div>

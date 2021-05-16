@@ -8,12 +8,10 @@ export default class Splash extends Component {
   async componentDidMount() {
     await setTimeout(async () => {
       this.setState({ animIn: false });
+      this.props.closeSplash();
       await setTimeout(async () => {
-        this.props.closeSplash();
-        await setTimeout(() => {
-          this.props.hideSplash();
-        }, 900);
-      }, 500);
+        this.props.hideSplash();
+      }, 1400);
     }, 2500);
   }
   render() {
@@ -23,7 +21,7 @@ export default class Splash extends Component {
           this.state.animIn === true ? "splash-body" : "splash-body close"
         }
       >
-        <img alt="" src={require("../../assets/drawables/icon.png").default} />
+        <img alt="" src={require("../../assets/drawables/logo.png").default} />
       </div>
     );
   }
