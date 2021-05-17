@@ -309,6 +309,28 @@ export default class UserProfile extends React.Component {
                   />
                 </div>
               </div>
+              <div
+                className="button right"
+                onClick={async () => {
+                  await setTimeout(() => {
+                    this.updateUser();
+                  }, 200);
+                }}
+              >
+                <div className="lottie">
+                  <Lottie
+                    options={{
+                      loop: 2,
+                      autoplay: true,
+                      animationData: saveAnim,
+                      rendererSettings: {
+                        preserveAspectRatio: "xMidYMid slice",
+                      },
+                    }}
+                  />
+                </div>
+                <p className="unselectable">Save</p>
+              </div>
               {this.props.newUser === true ? (
                 <div
                   className="button left"
@@ -330,7 +352,7 @@ export default class UserProfile extends React.Component {
                   >
                     <Lottie
                       options={{
-                        loop: true,
+                        loop: 2,
                         autoplay: true,
                         animationData: signOutAnim,
                         rendererSettings: {
@@ -362,28 +384,6 @@ export default class UserProfile extends React.Component {
               )}
             </>
           )}
-          <div
-            className="button right"
-            onClick={async () => {
-              await setTimeout(() => {
-                this.updateUser();
-              }, 200);
-            }}
-          >
-            <div className="lottie">
-              <Lottie
-                options={{
-                  loop: true,
-                  autoplay: true,
-                  animationData: saveAnim,
-                  rendererSettings: {
-                    preserveAspectRatio: "xMidYMid slice",
-                  },
-                }}
-              />
-            </div>
-            <p className="unselectable">Save</p>
-          </div>
         </div>
       </div>
     );

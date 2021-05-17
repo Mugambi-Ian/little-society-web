@@ -1,0 +1,62 @@
+.new-society-body {
+  background-color: #fff;
+  height: 100vh;
+  width: 100vw;
+  z-index: 5;
+  animation: bounce-in-right 1.1s both;
+  display: flex;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.12);
+}
+.new-society-body.hide {
+  animation: fade-out 0.4s both;
+}
+
+.new-society-body .content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  animation: fade-in 0.4s both;
+  flex-direction: column;
+}
+
+.new-society-body .button {
+  animation: fade-in 0.4 ease-in;
+  width: 60px;
+  z-index: 10;
+}
+
+.new-society-body .button .lottie {
+  height: 40px;
+  width: 40px;
+}
+.new-society-body .content h1 {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 300;
+  align-self: center;
+  margin-bottom: 20px;
+}
+
+.step1 {
+  display: flex;
+  height: 80%;
+  width: 100%;
+  flex-direction: column;
+  margin-top: 40px;
+}
+.progress-bar-wrapper {
+  padding: 1rem;
+  height: 100vh;
+  width: 100vw;
+}
+.progress-bar-wrapper,
+.progress-bar-wrapper * {
+  box-sizing: border-box;
+}
+.new-society-body ul.step-progress-bar {
+  max-width: 650px;
+  max-height: 30px;
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+}

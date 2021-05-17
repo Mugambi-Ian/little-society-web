@@ -7,7 +7,7 @@
   /* background-color: #74d2ff; */
   background-color: rgb(0, 0, 0);
   animation: fade-in 0.3s ease-in;
-  z-index: 10px;
+  z-index: 10;
 }
 
 .splash-body img {
