@@ -3,6 +3,9 @@ import "./create-society.css";
 import Lottie from "react-lottie";
 import closeAnim from "../../../../../assets/animations/close.json";
 import peopleAnim from "../../../../../assets/animations/people.json";
+import pinAnim from "../../../../../assets/animations/location.json";
+import encryptAnim from "../../../../../assets/animations/encrypt.json";
+import secureAnim from "../../../../../assets/animations/secure.json";
 import StepProgressBar from "react-step-progress";
 import "react-step-progress/dist/index.css";
 
@@ -24,6 +27,7 @@ export default class CreateSociety extends React.Component {
     }, 1150);
   }
   step1 = (<Step1 />);
+  step2 = (<Step2 />);
   render() {
     return (
       <div
@@ -65,6 +69,7 @@ export default class CreateSociety extends React.Component {
                 {
                   label: "Society Type",
                   name: "step 2",
+                  content: this.step2,
                 },
                 {
                   label: "Society Info",
@@ -105,6 +110,74 @@ class Step1 extends React.Component {
               },
             }}
           />
+        </div>
+      </div>
+    );
+  }
+}
+
+class Step2 extends React.Component {
+  render() {
+    return (
+      <div className="step2">
+        <h1 className="unselectable">Select one that suits your needs</h1>
+        <div style={{ display: "flex" }}>
+          <div className="button">
+            <div className="lottie pin">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: pinAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+              <h4 className="unselectable">Location Based</h4>
+              <p className="unselectable">
+                Avaialble from the map based on your user requirements
+              </p>
+            </div>
+          </div>
+          <div className="button">
+            <div className="lottie lock">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: secureAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+              <h4 className="unselectable">Annonymous</h4>
+              <p className="unselectable">
+                All data shared will be encrypted while users identity remain
+                annoymous.
+              </p>
+            </div>
+          </div>
+          <div className="button">
+            <div className="lottie lock">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: encryptAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+              <h4 className="unselectable">Private</h4>
+              <p className="unselectable">
+                Share your society's link to other users and approve their join
+                requests.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -43,6 +43,70 @@
   width: 100%;
   flex-direction: column;
   margin-top: 40px;
+  animation: fade-in 0.3s ease-in;
+}
+.step2 {
+  animation: fade-in 0.3s ease-in;
+  display: flex;
+  height: 80%;
+  width: 100%;
+  flex-direction: column;
+  margin-top: 40px;
+  align-items: center;
+}
+.step2 .button {
+  flex-direction: column;
+  width: 25vw;
+  height: 45vh;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+.step2 .button .lottie {
+  align-self: flex-start;
+  height: 20vh;
+  width: 10vw;
+  align-self: center;
+  margin-top: -25vh;
+}
+.button h4 {
+  margin: 0;
+  width: 22vw;
+  align-self: center;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: rgb(85, 85, 85);
+}
+
+.step2 .button p,
+.step2 .button h4 {
+  margin: 0;
+  margin-left: -5vw;
+  width: 20vw;
+  align-self: center;
+  text-align: center;
+}
+.button .lottie.pin {
+  height: 25vh;
+  width: 25vh;
+  margin-top: -15vh;
+}
+.button .lottie.pin p,
+.button .lottie.pin h4 {
+  margin-left: -4vw;
+}
+.step2 .button p {
+  margin-top: 10px;
+  color: rgb(155, 155, 155);
+}
+.button .lottie.lock h4 {
+  margin-top: 30px;
+}
+.button .lottie.lock {
+  height: 20vh;
+  width: 20vh;
+  margin-top: -20vh;
 }
 .progress-bar-wrapper {
   padding: 1rem;

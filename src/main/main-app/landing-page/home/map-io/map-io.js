@@ -1,7 +1,8 @@
 import React from "react";
 import { MAPBOX_KEY } from "../../../../../config/config";
 import "./map-io.css";
-import mapboxgl from "mapbox-gl/dist/mapbox-gl.js";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+const mapboxgl = require("!mapbox-gl/dist/mapbox-gl.js");
 
 mapboxgl.accessToken = MAPBOX_KEY;
 
@@ -15,7 +16,7 @@ export default class MapInterface extends React.Component {
       longitude: 0,
       zoom: 1.5,
     });
-    this.map.once("zoomend", () => {
+    this.map.once("zoomend", (e) => {
       this.props.openMap();
     });
     let e = "geolocation" in navigator;
