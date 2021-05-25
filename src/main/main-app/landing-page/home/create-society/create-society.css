@@ -25,9 +25,20 @@
   z-index: 10;
 }
 
+.new-society-body .button.right {
+  height: 62px;
+  width: 82px;
+  max-height: fit-content;
+}
+
 .new-society-body .button .lottie {
   height: 40px;
   width: 40px;
+}
+.new-society-body .button.right .lottie {
+  height: 30px;
+  width: 40px;
+  margin-top: -5px;
 }
 .new-society-body .content h1 {
   margin: 0;
@@ -54,6 +65,46 @@
   margin-top: 40px;
   align-items: center;
 }
+.step3 {
+  animation: fade-in 0.3s ease-in;
+  display: flex;
+  height: 80%;
+  width: 100%;
+  flex-direction: column;
+  margin-top: 40px;
+  align-items: center;
+}
+.step3 h1 {
+  margin-bottom: 0px;
+}
+.step3 .info-div {
+  overflow-y: auto;
+  max-height: 54vh;
+}
+.step3 .info-div .upload-img {
+  margin: 0;
+  margin-bottom: 20px;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 2px;
+  max-height: 300px;
+  max-width: 300px;
+}
+.step3 .info-div img.img-upload {
+  max-height: 300px;
+  max-width: 300px;
+}
+.step3 .info-div .upload-img lottie {
+  width: 250px;
+  align-self: center;
+  margin-bottom: 0;
+  margin: auto;
+}
+.step3 .info-div .details {
+  align-self: flex-start;
+  padding-top: 30px;
+}
 .step2 .button {
   flex-direction: column;
   width: 25vw;
@@ -61,6 +112,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0;
+  transition: all 0.2s;
 }
 .step2 .button .lottie {
   align-self: flex-start;
@@ -99,6 +151,16 @@
 .step2 .button p {
   margin-top: 10px;
   color: rgb(155, 155, 155);
+  transition: all 0.2s;
+}
+
+.step2 .button.on {
+  box-shadow: none;
+  background-color: #5c86ff;
+}
+.step2 .button.on p,
+.step2 .button.on h4 {
+  color: #fff;
 }
 .button .lottie.lock h4 {
   margin-top: 30px;

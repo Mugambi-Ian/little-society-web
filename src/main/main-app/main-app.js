@@ -41,7 +41,7 @@ export default class MainApp extends React.Component {
         ) : (
           <LandingPage
             user={this.state.user}
-            closeToast={this.props.scloseToast}
+            closeToast={this.props.closeToast}
             showTimedToast={this.props.showTimedToast}
             showUnTimedToast={this.props.showUnTimedToast}
             revokeAccess={this.props.revokeAccess}

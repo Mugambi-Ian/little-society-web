@@ -20,7 +20,6 @@ export default class LandingPage extends React.Component {
     } else {
       this.setState({ currentScreen: "society" });
     }
-    console.log(id);
   }
   render() {
     return (
@@ -28,7 +27,11 @@ export default class LandingPage extends React.Component {
         <div className="app-content">
           <Switch>
             <Route path="/" exact>
-              <Home />
+              <Home
+                closeToast={this.props.closeToast}
+                showTimedToast={this.props.showTimedToast}
+                showUnTimedToast={this.props.showUnTimedToast}
+              />
             </Route>
           </Switch>
         </div>

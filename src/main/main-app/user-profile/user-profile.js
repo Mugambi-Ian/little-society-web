@@ -27,7 +27,6 @@ import Loader from "../../../assets/components/loader/loader";
 import ReCAPTCHA from "react-google-recaptcha";
 import { RECAP_KEY } from "../../../config/config";
 
-var src = "";
 export default class UserProfile extends React.Component {
   state = {
     loading: true,
@@ -123,33 +122,17 @@ export default class UserProfile extends React.Component {
     }
   }
   async syncUser() {
-    var {
-      createdOn,
-      userAge,
-      userId,
-      userDp,
-      userGender,
-      userName,
-      phoneNumber,
-      email,
-      fullName,
-    } = this.state.user;
+    var { user } = this.state;
     if (this.state.dateSelected) {
       const x = this.state.dateSelected;
-      userAge = x.getFullYear() + "-" + x.getMonth() + "-" + x.getDate();
+      user.userAge = x.getFullYear() + "-" + x.getMonth() + "-" + x.getDate();
     }
     this.setState({ loading: true });
-    const x = _database.ref("users/data/" + userId);
-    await x.child("userDp").set(userDp);
-    await x.child("userId").set(userId);
-    await x.child("userAge").set(userAge);
-    await x.child("userGender").set(userGender);
-    await x.child("userName").set(userName);
-    await x.child("fullName").set(fullName);
-    await x.child("phoneNumber").set(phoneNumber);
-    await x.child("email").set(email);
-    await x.child("createdOn").set(createdOn);
-    await _database.ref("users/social/" + userName).set(_auth.currentUser.uid);
+    const x = _database.ref("users/data/" + user.userId);
+    x.push(user);
+    await _database
+      .ref("users/social/" + user.userName)
+      .set(_auth.currentUser.uid);
     this.setState({ loading: false });
     this.props.showTimedToast("Save Successfull");
     this.props.closeEditing();
@@ -393,6 +376,7 @@ export default class UserProfile extends React.Component {
 export const ImageUploader = (props) => {
   const uploadedImage = React.useRef(null);
   const imageUploader = React.useRef(null);
+  const [src, setSrc] = React.useState(props.src());
   const [updated, setUpdated] = React.useState(false);
   const [image, setImage] = React.useState(undefined);
   const [crop, setCrop] = React.useState({ x: 0, y: 0 });
@@ -401,7 +385,6 @@ export const ImageUploader = (props) => {
   const [croppedAreaPixels, setCroppedAreaPixels] = React.useState(null);
 
   const aspect = 1 / 1;
-
   function onCropChange(crop) {
     setCrop(crop);
   }
@@ -420,7 +403,7 @@ export const ImageUploader = (props) => {
       const { current } = uploadedImage;
       current.file = file;
       reader.onload = (e) => {
-        src = undefined;
+        setSrc(undefined);
         current.src = e.target.result;
         setUpdated(true);
         setImage(e.target.result);
@@ -434,6 +417,7 @@ export const ImageUploader = (props) => {
       const croppedImage = await getCroppedImg(image, croppedAreaPixels, 0);
       props.updateValue(croppedImage);
       setImage(croppedImage);
+      setSrc(croppedImage);
     } catch (e) {
       console.error(e);
     }
@@ -545,7 +529,7 @@ export const ImageUploader = (props) => {
             </div>
           </div>
         </div>
-      ) : props.src() ? (
+      ) : src ? (
         <img
           ref={uploadedImage}
           alt=""

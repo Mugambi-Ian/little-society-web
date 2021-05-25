@@ -26,7 +26,6 @@ export default class Home extends React.Component {
         <MapIo
           openMap={async () => {
             await setTimeout(() => {
-              console.log("qqwqe");
               this.setState({ openMap: true });
             }, 3000);
           }}
@@ -126,6 +125,9 @@ export default class Home extends React.Component {
         </div>
         {this.state.createSociety ? (
           <CreateSociety
+            closeToast={this.props.closeToast}
+            showTimedToast={this.props.showTimedToast}
+            showUnTimedToast={this.props.showUnTimedToast}
             closeProcess={() => {
               this.setState({ createSociety: undefined });
             }}
