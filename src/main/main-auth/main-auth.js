@@ -113,7 +113,7 @@ export default class Login extends Component {
             className="button"
             onClick={async () => {
               await setTimeout(() => {
-                this.signInWithFacebook();
+                this.props.authorizeUser();
               }, 250);
             }}
           >

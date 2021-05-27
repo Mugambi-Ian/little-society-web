@@ -97,8 +97,8 @@
 .home-body .button.bt {
   position: fixed;
   bottom: 3vh;
-  right: 2.5vw;
-  width: 27vw;
+  right:40px;
+  width: 350px;
   margin: 0;
   height: 30px;
 }

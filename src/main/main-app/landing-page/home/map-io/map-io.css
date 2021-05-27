@@ -3,7 +3,7 @@
   top: 60px;
   min-height: calc(100vh - 60px);
   bottom: 0;
-  width: 66vw;
+  width: 75vw;
 }
 .select-map {
   display: flex;

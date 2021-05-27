@@ -58,7 +58,8 @@ h2 {
   height: 35px;
   margin-right: 20px;
   align-self: center;
-} .button .lottie{
+}
+.button .lottie {
   width: 65px;
   height: 65px;
   align-self: center;
@@ -68,6 +69,7 @@ h2 {
   margin: 0;
 }
 
-.button:active {
+.button:active,
+.step-bt:active {
   animation: shadow-drop-2-center 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }

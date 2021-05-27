@@ -69,6 +69,14 @@ export default class CreateSociety extends React.Component {
       }}
     />
   );
+  step4 = (
+    <Step4
+      society={this.state.society}
+      setSociety={(x) => {
+        this.setState({ society: x });
+      }}
+    />
+  );
   isValidUSerName() {
     var regex = /^[0-9A-Za-z_-]+[0-9A-Za-z_-]*$/g;
     return regex.test(this.state.society.societyId);
@@ -155,12 +163,9 @@ export default class CreateSociety extends React.Component {
                   },
                 },
                 {
-                  label: "User Interaction",
+                  label: "Interaction",
                   name: "step 2",
-                },
-                {
-                  label: "Finish",
-                  name: "step 2",
+                  content: this.step4,
                 },
               ]}
             />
@@ -178,7 +183,7 @@ class Step1 extends React.Component {
     return (
       <div className="step1">
         <h1 className="unselectable">Create Your Own Society</h1>
-        <div style={{ height: "50vh", alignSelf: "center" }}>
+        <div style={{ alignSelf: "center", height: "320px", width: "640px" }}>
           <Lottie
             options={{
               loop: true,
@@ -218,7 +223,7 @@ class Step2 extends React.Component {
           <h1 className="unselectable">Select one that suits your needs</h1>
           <div style={{ display: "flex" }}>
             <div
-              className={this.c() === "Location" ? "button on" : "button"}
+              className={this.c() === "Location" ? "step-bt on" : "step-bt"}
               onClick={async () => {
                 await setTimeout(() => {
                   if (this.c() === "Location") {
@@ -249,7 +254,7 @@ class Step2 extends React.Component {
               </div>
             </div>
             <div
-              className={this.c() === "Annonymous" ? "button on" : "button"}
+              className={this.c() === "Annonymous" ? "step-bt on" : "step-bt"}
               onClick={async () => {
                 await setTimeout(() => {
                   if (this.c() === "Annonymous") {
@@ -263,7 +268,7 @@ class Step2 extends React.Component {
                 }, 200);
               }}
             >
-              <div className="lottie lock">
+              <div className="lottie secure">
                 <Lottie
                   options={{
                     loop: true,
@@ -282,7 +287,7 @@ class Step2 extends React.Component {
               </div>
             </div>
             <div
-              className={this.c() === "Private" ? "button on" : "button"}
+              className={this.c() === "Private" ? "step-bt on" : "step-bt"}
               onClick={async () => {
                 await setTimeout(() => {
                   if (this.c() === "Private") {
@@ -309,8 +314,7 @@ class Step2 extends React.Component {
                 />
                 <h4 className="unselectable">Private</h4>
                 <p className="unselectable">
-                  Share your society's link to other users and approve their
-                  join requests.
+                  Share your society's link and approve join requests.
                 </p>
               </div>
             </div>
@@ -332,7 +336,6 @@ class Step2 extends React.Component {
     );
   }
 }
-
 class Step3 extends React.Component {
   state = {
     society: this.props.society,
@@ -393,6 +396,135 @@ class Step3 extends React.Component {
               }}
               placeholder="Society Id"
             />
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+class Step4 extends React.Component {
+  state = {
+    addLocation: false,
+    society: this.props.society,
+  };
+
+  shouldComponentUpdate(p, u) {
+    p.setSociety(u.society);
+    return true;
+  }
+
+  update(x) {
+    const { society } = this.props;
+    society.categoryName = x;
+    this.setState({ society });
+  }
+
+  c() {
+    return this.state.society.categoryName;
+  }
+
+  render() {
+    return (
+      <div className="step4">
+        <h1 className="unselectable">Enable options that work for you</h1>
+        <div style={{ display: "flex" }}>
+          <div
+            className={this.c() === "Location" ? "step-bt on" : "step-bt"}
+            onClick={async () => {
+              await setTimeout(() => {
+                if (this.c() === "Location") {
+                  this.update("");
+                } else {
+                  this.setState({
+                    addLocation: true,
+                  });
+                }
+              }, 200);
+            }}
+          >
+            <div className="lottie pin">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: pinAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+              <h4 className="unselectable">Location Based</h4>
+              <p className="unselectable">
+                Avaialble from the map based on your user requirements
+              </p>
+            </div>
+          </div>
+          <div
+            className={this.c() === "Annonymous" ? "step-bt on" : "step-bt"}
+            onClick={async () => {
+              await setTimeout(() => {
+                if (this.c() === "Annonymous") {
+                  this.update("");
+                } else {
+                  this.update("Annonymous");
+                  this.setState({
+                    addLocation: undefined,
+                  });
+                }
+              }, 200);
+            }}
+          >
+            <div className="lottie secure">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: secureAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+              <h4 className="unselectable">Annonymous</h4>
+              <p className="unselectable">
+                All data shared will be encrypted while users identity remain
+                annoymous.
+              </p>
+            </div>
+          </div>
+          <div
+            className={this.c() === "Private" ? "step-bt on" : "step-bt"}
+            onClick={async () => {
+              await setTimeout(() => {
+                if (this.c() === "Private") {
+                  this.update("");
+                } else {
+                  this.update("Private");
+                  this.setState({
+                    addLocation: undefined,
+                  });
+                }
+              }, 200);
+            }}
+          >
+            <div className="lottie lock">
+              <Lottie
+                options={{
+                  loop: true,
+                  autoplay: true,
+                  animationData: encryptAnim,
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+              />
+              <h4 className="unselectable">Private</h4>
+              <p className="unselectable">
+                Share your society's link to other users and approve their join
+                requests.
+              </p>
+            </div>
           </div>
         </div>
       </div>
