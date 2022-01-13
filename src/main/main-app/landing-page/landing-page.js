@@ -2,6 +2,7 @@ import React from "react";
 import "./landing-page.css";
 import { Switch, Route, Link } from "react-router-dom";
 import Home from "./home/home";
+import { _auth } from "../../../config";
 
 export default class LandingPage extends React.Component {
   state = {
@@ -22,6 +23,8 @@ export default class LandingPage extends React.Component {
           <Switch>
             <Route path="/" exact>
               <Home
+                geojson={this.props.geojson}
+                break_down={this.props.break_down}
                 closeToast={this.props.closeToast}
                 showTimedToast={this.props.showTimedToast}
                 showUnTimedToast={this.props.showUnTimedToast}
@@ -62,24 +65,44 @@ export default class LandingPage extends React.Component {
             <p className="unselectable">Home</p>
             <span />
           </Link>
-          <Link
-            to="/mySettings"
+          <a
+            href="/"
+            className="nav-item"
+            onClick={async (e) => {
+              e.preventDefault();
+              await setTimeout(() => {
+                this.props.editProfile();
+              }, 200);
+            }}
+          >
+            <img src={this.props.user.userDp} className="unselectable" alt="" />
+            <p className="unselectable">My Profile</p>
+            <span />
+          </a>
+          <a
+            href="/"
             className={
               this.state.currentScreen === "mySettings"
                 ? "nav-item on"
                 : "nav-item"
             }
-            onClick={async () => {
+            onClick={async (e) => {
+              e.preventDefault();
               await setTimeout(() => {
-                if (this.state.currentScreen !== "mySettings")
-                  this.setState({ currentScreen: "mySettings" });
+                _auth.signOut().finally(() => {
+                  this.props.revokeAccess();
+                });
               }, 200);
             }}
           >
-            <img src={this.props.user.userDp} className="unselectable" alt="" />
+            <img
+              src={require("../../../assets/drawables/ic-logout.png").default}
+              className="unselectable"
+              alt=""
+            />
             <p className="unselectable">Logout</p>
             <span />
-          </Link>
+          </a>
         </div>
       </div>
     );

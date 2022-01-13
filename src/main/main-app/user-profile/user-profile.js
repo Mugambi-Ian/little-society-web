@@ -89,6 +89,7 @@ export default class UserProfile extends React.Component {
       )
       .bind(this);
   }
+
   async updateUser() {
     var { userAge, userGender, userName, phoneNumber, email, fullName } =
       this.state.user;
@@ -129,7 +130,7 @@ export default class UserProfile extends React.Component {
     }
     this.setState({ loading: true });
     const x = _database.ref("users/data/" + user.userId);
-    x.push(user);
+    x.set(user);
     await _database
       .ref("users/social/" + user.userName)
       .set(_auth.currentUser.uid);
@@ -145,18 +146,6 @@ export default class UserProfile extends React.Component {
           ""
         ) : (
           <>
-            <div className="launch-anim left">
-              <Lottie
-                options={{
-                  loop: true,
-                  autoplay: true,
-                  animationData: launchAnim,
-                  rendererSettings: {
-                    preserveAspectRatio: "xMidYMid slice",
-                  },
-                }}
-              />
-            </div>
             <div className="launch-anim right">
               <Lottie
                 options={{
@@ -192,7 +181,7 @@ export default class UserProfile extends React.Component {
               <h2>Fill out your details</h2>
               <span className="line" />
               <div className="info-div">
-                <div className="pic">
+                <div className="pic" style={{ marginRight: "40px" }}>
                   <ImageUploader
                     src={() => {
                       return this.state.user.userDp === ""
@@ -300,18 +289,6 @@ export default class UserProfile extends React.Component {
                   }, 200);
                 }}
               >
-                <div className="lottie">
-                  <Lottie
-                    options={{
-                      loop: 2,
-                      autoplay: true,
-                      animationData: saveAnim,
-                      rendererSettings: {
-                        preserveAspectRatio: "xMidYMid slice",
-                      },
-                    }}
-                  />
-                </div>
                 <p className="unselectable">Save</p>
               </div>
               {this.props.newUser === true ? (
@@ -325,25 +302,6 @@ export default class UserProfile extends React.Component {
                     }, 200);
                   }}
                 >
-                  <div
-                    className="lottie"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      marginRight: "10px",
-                    }}
-                  >
-                    <Lottie
-                      options={{
-                        loop: 2,
-                        autoplay: true,
-                        animationData: signOutAnim,
-                        rendererSettings: {
-                          preserveAspectRatio: "xMidYMid slice",
-                        },
-                      }}
-                    />
-                  </div>
                   <p className="unselectable">Sign Out</p>
                 </div>
               ) : (
@@ -355,13 +313,6 @@ export default class UserProfile extends React.Component {
                     }, 200);
                   }}
                 >
-                  <img
-                    src={
-                      require("../../../assets/drawables/ic-close.png").default
-                    }
-                    alt=" "
-                    className="unselectable"
-                  />
                   <p className="unselectable">Close</p>
                 </div>
               )}

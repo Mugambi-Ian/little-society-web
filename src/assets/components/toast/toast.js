@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Loader from "../loader/loader";
+import Lottie from "react-lottie";
 import "./toast.css";
 export default class Toast extends Component {
   constructor() {
@@ -37,7 +37,16 @@ export default class Toast extends Component {
       ) : (
         <div className="loader-toast">
           <div className="loader-toast-body">
-            <Loader />
+            <Lottie
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: require("../../../assets/animations/loader.json"),
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+            />
           </div>
         </div>
       );
@@ -55,7 +64,16 @@ export default class Toast extends Component {
       ) : (
         <div className="loader-toast">
           <div className="loader-toast-body">
-            <Loader />
+            <Lottie
+              options={{
+                loop: true,
+                autoplay: true,
+                animationData: require("../../../assets/animations/loader.json"),
+                rendererSettings: {
+                  preserveAspectRatio: "xMidYMid slice",
+                },
+              }}
+            />
           </div>
         </div>
       );

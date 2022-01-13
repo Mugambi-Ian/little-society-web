@@ -10,7 +10,7 @@ import StepProgressBar from "react-step-progress";
 import "react-step-progress/dist/index.css";
 import { SelectLocation } from "../map-io/map-io";
 import { ImageUploader, Input } from "../../../user-profile/user-profile";
-import { idDate, _database } from "../../../../../config";
+import { _database, _storage, _auth } from "../../../../../config";
 
 export default class CreateSociety extends React.Component {
   state = {
@@ -103,8 +103,23 @@ export default class CreateSociety extends React.Component {
               progressClass={"step-progress-bar"}
               stepClass={"progress-step"}
               startingStep={0}
-              onSubmit={(x) => {
-                console.log(x);
+              onSubmit={async () => {
+                const { society } = this.state;
+                if (!society.discord_channel) {
+                  this.props.showTimedToast("Channel Link Required");
+                  return false;
+                } else if (!society.societyName) {
+                  this.props.showTimedToast("Display Name");
+                  return false;
+                } else {
+                  this.props.showUnTimedToast();
+                  await _database.ref("society").once("value", async (e) => {
+                    society.societyId = (await e.ref.push()).key;
+                    if (this.state.uploadPic) {
+                      await this.uploadLogo();
+                    } else await this.send2Db();
+                  });
+                }
               }}
               steps={[
                 {
@@ -126,35 +141,9 @@ export default class CreateSociety extends React.Component {
                   },
                 },
                 {
-                  label: "Display Info",
+                  label: "Society Info",
                   name: "step 2",
                   content: this.step3,
-                  validator: () => {
-                    const { society } = this.state;
-                    if (this.isValidUSerName() === false) {
-                      this.props.showTimedToast(
-                        "Id can only contain alphanumeric characters!"
-                      );
-                      return false;
-                    } else {
-                      _database
-                        .ref("society/data/")
-                        .once("value", async (e) => {
-                          if (e.hasChild(society.societyId)) {
-                            society.societyId = idDate("demo");
-                            this.setState({ society });
-                            this.props.showTimedToast("Id Unavailable!");
-                            return false;
-                          }
-                        });
-                      if (this.state.society.societyName === "") {
-                        this.props.showTimedToast("Name Required!");
-                        return false;
-                      } else {
-                        return true;
-                      }
-                    }
-                  },
                 },
               ]}
             />
@@ -164,6 +153,55 @@ export default class CreateSociety extends React.Component {
         )}
       </div>
     );
+  }
+  async uploadLogo() {
+    const { society } = this.state;
+    const id = this.state.society.societyId + new Date().getTime();
+    const uploadTask = _storage
+      .ref("logos/")
+      .child(id + ".jpeg")
+      .put(this.state.society.societyDp);
+    await uploadTask
+      .on(
+        "state_changed",
+        function () {
+          uploadTask.snapshot.ref
+            .getDownloadURL()
+            .then(
+              async function (downloadURL) {
+                await setTimeout(async () => {
+                  var url = "" + downloadURL;
+                  society.societyDp = url;
+                  this.setState({ society, uploadPic: undefined });
+                  await this.send2Db();
+                }, 1000);
+              }.bind(this)
+            )
+            .catch(async (e) => {
+              console.log(e);
+            });
+        }.bind(this)
+      )
+      .bind(this);
+  }
+
+  async send2Db() {
+    const { society } = this.state;
+    society.admin_id = _auth.currentUser.uid;
+    await _database
+      .ref("society")
+      .child(society.societyId)
+      .set({
+        ...society,
+      });
+    await _database
+      .ref(`users/data/${_auth.currentUser.uid}/societies/${society.societyId}`)
+      .set(society.societyId);
+    this.props.closeToast();
+    await setTimeout(async () => {
+      this.props.showTimedToast("Society Mapped");
+      await this.close();
+    }, 500);
   }
 }
 
@@ -369,13 +407,13 @@ class Step3 extends React.Component {
               placeholder="*Display Name"
             />
             <Input
-              value={this.state.society.societyId}
+              value={this.state.society.discord_channel}
               onChange={(e) => {
                 const { society } = this.state;
-                society.societyId = e.target.value;
+                society.discord_channel = e.target.value;
                 this.setState({ society });
               }}
-              placeholder="Society Id"
+              placeholder="*Discord Channel"
             />
           </div>
         </div>
