@@ -80,29 +80,6 @@ export default class Home extends React.Component {
               />
               <p className="unselectable">Recomended</p>
             </div>
-            <div
-              onClick={async () => {
-                await setTimeout(() => {
-                  if (this.state.currentShowing !== "trending")
-                    this.setState({ currentShowing: "trending" });
-                }, 200);
-              }}
-              className={
-                this.state.currentShowing === "trending"
-                  ? "switch-button on"
-                  : "switch-button"
-              }
-            >
-              <img
-                src={
-                  require("../../../../assets/drawables/ic-trending.png")
-                    .default
-                }
-                alt=""
-                className="unselectable"
-              />
-              <p className="unselectable">Trending</p>
-            </div>
           </div>
           <EmptyList />
           <div

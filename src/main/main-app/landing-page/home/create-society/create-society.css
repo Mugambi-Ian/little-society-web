@@ -13,7 +13,7 @@
 
 .new-society-body .content {
   width: 100%;
-  height: 100%;
+  height: 90%;
   display: flex;
   animation: fade-in 0.4s both;
   flex-direction: column;
@@ -53,7 +53,7 @@
   height: 80%;
   width: 100%;
   flex-direction: column;
-  margin-top: 40px;
+  margin-top: 20px;
   animation: fade-in 0.3s ease-in;
 }
 .step2,
@@ -63,7 +63,7 @@ step4 {
   height: 80%;
   width: 100%;
   flex-direction: column;
-  margin-top: 40px;
+  margin-top: 20px;
   align-items: center;
 }
 .step3 {
@@ -72,7 +72,7 @@ step4 {
   height: 80%;
   width: 100%;
   flex-direction: column;
-  margin-top: 40px;
+  margin-top: 20px;
   align-items: center;
 }
 .step3 h1 {
@@ -117,7 +117,7 @@ step4 {
 }
 .step2 .button .lottie {
   align-self: flex-start;
-  height: 20vh;
+  height: 15vh;
   width: 10vw;
   align-self: center;
   margin-top: -25vh;
@@ -140,15 +140,12 @@ step4 {
   align-self: center;
   text-align: center;
 }
-.button .lottie.pin {
-  height: 25vh;
-  width: 25vh;
-  margin-top: -15vh;
+.button .lottie {
+  height: 15vh;
+  width: 15vh;
+  margin-top: -20vh;
 }
-.button .lottie.pin p,
-.button .lottie.pin h4 {
-  margin-left: -4vw;
-}
+
 .step2 .button p {
   margin-top: 10px;
   color: rgb(155, 155, 155);
@@ -176,10 +173,10 @@ step4 {
   height: 60%;
 }
 .step-bt .lottie.lock {
-  height: 180px;
-  width: 180px;
+  height: 130px;
+  width: 130px;
   align-self: center;
-  margin-bottom: -5vh;
+  margin-bottom: 25px;
 }
 
 .step-bt .lottie.lock  h4{
@@ -215,8 +212,8 @@ step4 {
   margin: 0;
   align-self: center;
   text-align: center;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  margin-top: -5px;
+  margin-bottom: 10px;
   color: rgb(85, 85, 85);
 }
 .step-bt p,
@@ -226,7 +223,7 @@ step4 {
 }
 
 .step-bt p {
-  margin-top: 10px;
+  margin-top: 0;
   color: rgb(155, 155, 155);
   transition: all 0.2s;
 }
